@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Infringements;
+use App\Entity\Infringement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Infringements>
+ * @extends ServiceEntityRepository<Infringement>
  */
-class InfringementsRepository extends ServiceEntityRepository
+class InfringementRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Infringements::class);
+        parent::__construct($registry, Infringement::class);
     }
 
     //    /**
-    //     * @return Infringements[] Returns an array of Infringements objects
+    //     * @return Infringement[] Returns an array of Infringement objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class InfringementsRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Infringements
+    //    public function findOneBySomeField($value): ?Infringement
     //    {
     //        return $this->createQueryBuilder('i')
     //            ->andWhere('i.exampleField = :val')

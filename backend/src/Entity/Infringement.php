@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\InfringementsRepository;
+use App\Repository\InfringementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: InfringementsRepository::class)]
-class Infringements
+#[ORM\Entity(repositoryClass: InfringementRepository::class)]
+class Infringement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,10 +20,13 @@ class Infringements
     private ?string $description = null;
 
     #[ORM\Column]
-    private ?float $amount = null;
+    private ?int $amount = null;
 
     #[ORM\Column(length: 12)]
     private ?string $infringement_id = null;
+
+    #[ORM\ManyToOne(inversedBy: 'relation_user_infringement')]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -54,12 +57,12 @@ class Infringements
         return $this;
     }
 
-    public function getAmount(): ?float
+    public function getAmount(): ?int
     {
         return $this->amount;
     }
 
-    public function setAmount(float $amount): static
+    public function setAmount(int $amount): static
     {
         $this->amount = $amount;
 
@@ -74,6 +77,18 @@ class Infringements
     public function setInfringementId(string $infringement_id): static
     {
         $this->infringement_id = $infringement_id;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

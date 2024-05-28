@@ -2,15 +2,19 @@
 
 namespace App\Entity;
 
-use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Metadata\ApiResource;
 
-#[ORM\Entity(repositoryClass: UsersRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-class Users implements UserInterface, PasswordAuthenticatedUserInterface
+#[ApiResource]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -55,6 +59,17 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $expiration_date = null;
+
+    /**
+     * @var Collection<int, Infringement>
+     */
+    #[ORM\OneToMany(targetEntity: Infringement::class, mappedBy: 'user')]
+    private Collection $relation_user_infringement;
+
+    public function __construct()
+    {
+        $this->relation_user_infringement = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -223,6 +238,36 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setExpirationDate(\DateTimeInterface $expiration_date): static
     {
         $this->expiration_date = $expiration_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Infringement>
+     */
+    public function getRelationUserInfringement(): Collection
+    {
+        return $this->relation_user_infringement;
+    }
+
+    public function addRelationUserInfringement(Infringement $relationUserInfringement): static
+    {
+        if (!$this->relation_user_infringement->contains($relationUserInfringement)) {
+            $this->relation_user_infringement->add($relationUserInfringement);
+            $relationUserInfringement->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRelationUserInfringement(Infringement $relationUserInfringement): static
+    {
+        if ($this->relation_user_infringement->removeElement($relationUserInfringement)) {
+            // set the owning side to null (unless already changed)
+            if ($relationUserInfringement->getUser() === $this) {
+                $relationUserInfringement->setUser(null);
+            }
+        }
 
         return $this;
     }
