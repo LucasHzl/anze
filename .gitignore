@@ -25,6 +25,8 @@ backend/public/assets/
 backend/assets/vendor/
 ###< symfony/asset-mapper ###
 
+backend/config/jwt/*
+
 
 #############################FRONTEND#############################
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
