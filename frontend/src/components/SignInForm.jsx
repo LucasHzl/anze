@@ -7,8 +7,12 @@ import { useRouter } from "next/navigation";
 export default function SignInForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+
+
     const [apiError, setApiError] = useState("");
     const [apiSuccess, setApiSuccess] = useState("");
 
@@ -59,7 +63,7 @@ export default function SignInForm() {
                                     name="email" 
                                     id="email" 
                                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                    placeholder="email@example.com" 
+                                    placeholder="email@exemple.com" 
                                     required 
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}

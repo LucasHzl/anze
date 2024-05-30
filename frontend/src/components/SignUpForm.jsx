@@ -1,10 +1,10 @@
-import Link from "next/link";
+"use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
-
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -15,40 +15,64 @@ export default function SignUpForm() {
     const [cryptogram, setCryptogram] = useState("");
     const [expirationDate, setExpirationDate] = useState("");
 
-
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [apiError, setApiError] = useState("");
-
-
     const [apiSuccess, setApiSuccess] = useState("");
 
     const router = useRouter();
 
-    const signInSubmit = async (e) => {
+    const signUpSubmit = async (e) => {
         e.preventDefault();
 
+        console.log("Form submitted");
+
+        let roles = ["ROLE_USER"]
+
+        let first_name = firstName
+        let last_name = lastName
+        let card_number = cardNumber
+        let expiration_date = expirationDate
+
         try {
-            const response = await fetch("http://127.0.0.1:8000/api/signin_check", {
+            const bodyData = {
+                roles,
+                email,
+                password,
+                first_name,
+                last_name,
+                birthdate,
+                phone,
+                adress,
+                card_number,
+                cryptogram,
+                expiration_date,
+            };
+
+            console.log("Request body :", bodyData);
+
+            const response = await fetch("http://127.0.0.1:8000/api/users", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/ld+json",
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify(bodyData),
             });
+
+            console.log("Response status :", response.status);
 
             const data = await response.json();
 
             if (response.ok) {
-                setApiSuccess("Login successful!");
+                setApiSuccess("Signup successful!");
                 localStorage.setItem("token", data.token);
-
                 // router.push("/profil");
             } else {
                 setApiError(data.message || "An error occurred");
                 setApiSuccess("");
             }
         } catch (error) {
+            console.error("Error during sign up:", error);
             setApiError("An error occurred. Please try again.");
             setApiSuccess("");
         }
@@ -62,52 +86,54 @@ export default function SignUpForm() {
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Création de compte ANZE
                         </h1>
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form onSubmit={signUpSubmit} className="space-y-4 md:space-y-6" action="#">
                             <div>
                                 <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prénom</label>
-                                <input type="text" name="firstName" id="firstName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Sarah" required />
+                                <input type="text" name="firstName" id="firstName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Sarah" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="lastName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                <input type="text" name="lastName" id="lastName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Courci" required />
+                                <input type="text" name="lastName" id="lastName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Courci" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="email@example.com" required />
+                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="email@exemple.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Téléphone</label>
-                                <input type="phone" name="phone" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0601020304" required />
+                                <input type="phone" name="phone" id="phone" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="0601020304" required value={phone} onChange={(e) => setPhone(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="birthdate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de naissance</label>
-                                <input type="date" name="birthdate" id="birthdate" placeholder="07/06/1999" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <input type="date" name="birthdate" id="birthdate" placeholder="07/06/1999" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={birthdate} onChange={(e) => setBirthdate(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="adress" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adresse</label>
-                                <input type="text" name="adress" id="adress" placeholder="3 Rue des Potiers, 44600 Nantes" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <input type="text" name="adress" id="adress" placeholder="3 Rue des Potiers, 44600 Nantes" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={adress} onChange={(e) => setAdress(e.target.value)} />
                             </div>
                             <div>
-                                <label htmlFor="cardNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de carte bleu</label>
-                                <input type="text" name="cardNumber" id="cardNumber" placeholder="8726 xxxx xxxx xxxx" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <label htmlFor="cardNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de carte bancaire</label>
+                                <input type="text" name="cardNumber" id="cardNumber" placeholder="8726 xxxx xxxx xxxx" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} />
                             </div>
                             <div>
-                                <label htmlFor="cryptogram" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">CCV</label>
-                                <input type="text" name="cardNumber" id="cardNumber" placeholder="786" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <label htmlFor="cryptogram" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cryptogramme</label>
+                                <input type="text" name="cryptogram" id="cryptogram" placeholder="123" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={cryptogram} onChange={(e) => setCryptogram(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="expirationDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'expiration</label>
-                                <input type="date" name="expirationDate" id="expirationDate" placeholder="7XX" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <input type="date" name="expirationDate" id="expirationDate" placeholder="2023-07" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de passe</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={password} onChange={(e) => setPassword(e.target.value)} />
                             </div>
-                            <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">S'inscrire</button>
+                            <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Créer un compte</button>
+                            {apiError && <div className="text-red-600">{apiError}</div>}
+                            {apiSuccess && <div className="text-green-600">{apiSuccess}</div>}
                         </form>
                     </div>
                 </div>
             </div>
         </section>
-    )
+    );
 }
