@@ -3,9 +3,11 @@ import SignUpForm from "@/components/SignUpForm";
 
 export default function SignIn() {
     return (
-        <main>
+        <>
             <Navbar />
-            <SignUpForm />
-        </main>
+            <main className="">
+                <SignUpForm />
+            </main>
+        </>
     )
 }
