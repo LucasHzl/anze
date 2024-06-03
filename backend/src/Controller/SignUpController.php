@@ -32,7 +32,7 @@ class SignUpController extends AbstractController
                 $requestContent
             )
         ) {
-            $message = 'Un problème technique est survenu, veuillez réessayer ultérieu
+            $message = 'Un problème technique est survenu, veuillez réessayer ultérieurement
             return new Response($message, 500)';
         }
         $userFirstName = $requestContent['first_name'];
@@ -59,7 +59,7 @@ class SignUpController extends AbstractController
         $newUser->setFirstName($userFirstName);
         $newUser->setLastName($userLastName);
         $birthdate = new DateTime($userBirthdate);
-        $newUser-> setBirthdate($birthdate);
+        $newUser->setBirthdate($birthdate);
         $newUser->setPhone($userPhone);
         $newUser->setAdress($userAdress);
         $newUser->setCardNumber($userCardNumber);

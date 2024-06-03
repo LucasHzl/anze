@@ -1,23 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { requestAsyncStorage } from "next/dist/client/components/request-async-storage-instance";
 
 export default function SignUpForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [first_name, setFirstName] = useState("");
+    const [last_name, setLastName] = useState("");
     const [birthdate, setBirthdate] = useState("");
     const [phone, setPhone] = useState("");
     const [adress, setAdress] = useState("");
-    const [cardNumber, setCardNumber] = useState("");
+    const [card_number, setCardNumber] = useState("");
     const [cryptogram, setCryptogram] = useState("");
-    const [expirationDate, setExpirationDate] = useState("");
+    const [expiration_date, setExpirationDate] = useState("");
 
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [apiError, setApiError] = useState("");
+
     const [apiSuccess, setApiSuccess] = useState("");
 
     const router = useRouter();
@@ -28,11 +30,6 @@ export default function SignUpForm() {
         console.log("Form submitted");
 
         let roles = ["ROLE_USER"]
-
-        let first_name = firstName
-        let last_name = lastName
-        let card_number = cardNumber
-        let expiration_date = expirationDate
 
         try {
             const bodyData = {
@@ -61,20 +58,8 @@ export default function SignUpForm() {
 
             console.log("Response status :", response.status);
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setApiSuccess("Signup successful!");
-                localStorage.setItem("token", data.token);
-                // router.push("/profil");
-            } else {
-                setApiError(data.message || "An error occurred");
-                setApiSuccess("");
-            }
-        } catch (error) {
-            console.error("Error during sign up:", error);
-            setApiError("An error occurred. Please try again.");
-            setApiSuccess("");
+        } finally {
+            router.push("/signin");
         }
     };
 
@@ -89,11 +74,11 @@ export default function SignUpForm() {
                         <form onSubmit={signUpSubmit} className="space-y-4 md:space-y-6" action="#">
                             <div>
                                 <label htmlFor="firstName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prénom</label>
-                                <input type="text" name="firstName" id="firstName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Sarah" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                                <input type="text" name="firstName" id="firstName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Sarah" required value={first_name} onChange={(e) => setFirstName(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="lastName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom</label>
-                                <input type="text" name="lastName" id="lastName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Courci" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                                <input type="text" name="lastName" id="lastName" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Courci" required value={last_name} onChange={(e) => setLastName(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
@@ -113,7 +98,7 @@ export default function SignUpForm() {
                             </div>
                             <div>
                                 <label htmlFor="cardNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de carte bancaire</label>
-                                <input type="text" name="cardNumber" id="cardNumber" placeholder="8726 xxxx xxxx xxxx" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} />
+                                <input type="text" name="cardNumber" id="cardNumber" placeholder="8726 xxxx xxxx xxxx" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={card_number} onChange={(e) => setCardNumber(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="cryptogram" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Cryptogramme</label>
@@ -121,7 +106,7 @@ export default function SignUpForm() {
                             </div>
                             <div>
                                 <label htmlFor="expirationDate" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'expiration</label>
-                                <input type="date" name="expirationDate" id="expirationDate" placeholder="2023-07" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
+                                <input type="date" name="expirationDate" id="expirationDate" placeholder="2023-07" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required value={expiration_date} onChange={(e) => setExpirationDate(e.target.value)} />
                             </div>
                             <div>
                                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mot de passe</label>

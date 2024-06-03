@@ -2,10 +2,24 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Get;
+
+use App\Controller\UserController;
+
+use App\Controller\InfringementController;
 use App\Repository\InfringementRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InfringementRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(
+            controller: InfringementController::class
+        )
+] )]
+
 class Infringement
 {
     #[ORM\Id]
