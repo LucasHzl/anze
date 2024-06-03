@@ -22,9 +22,9 @@ use App\Controller\UserController;
         new Post(
             controller: SignUpController::class
         ),
-        // new Get(
-        //     controller: UserController::class
-        // )
+        new Get(
+            controller: UserController::class
+        )
 ] )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
