@@ -1,20 +1,34 @@
 import Link from "next/link";
 
 export default function Navbar() {
-    return(
-        <nav className="flex flex-col justify-center items-center md:flex-row md:justify-between md:pl-12 md:pr-12 md:pt-4 md:pb-4 bg-blue-200 w-screen h-20">
-            <div className="md:mr-auto">
+    return (
+        <nav className="bg-blue-200 w-full p-4 flex flex-col items-center md:flex-row md:justify-between">
+            <div className="flex flex-col items-center md:items-start">
                 <Link href={"/"}>
-                    <h1 className="text-2xl font-normal">ANZE</h1>
+                    <div className="text-2xl font-semibold cursor-pointer">ANZE</div>
                 </Link>
                 <Link href={"/"}>
-                    <h2 className="text-sm font-normal">Agence Nationale des Zinzins de l'Espace</h2>
+                    <div className="text-sm font-medium cursor-pointer">Agence Nationale des Zinzins de l'Espace</div>
                 </Link>
             </div>
-            <div className="flex gap-6 font-normal text-md">
-                <Link href={"/signin"}>Connexion</Link>
-                <Link href={"/signup"}>Inscription</Link>
+            <div className="flex flex-col md:flex-row md:gap-8 items-center md:items-center">
+                <div className="flex flex-col md:flex-row md:gap-8 items-center">
+                    <Link href={"/payment"}>
+                        <div className="font-medium hover:text-blue-600 transition cursor-pointer">Contravention</div>
+                    </Link>
+                    <Link href={"/profile"}>
+                        <div className="font-medium hover:text-blue-600 transition cursor-pointer mt-2 md:mt-0">Mon compte</div>
+                    </Link>
+                </div>
+                <div className="flex flex-col md:flex-row md:gap-8 items-center mt-2 md:mt-0">
+                    <Link href={"/signin"}>
+                        <div className="font-medium hover:text-blue-600 transition cursor-pointer">Connexion</div>
+                    </Link>
+                    <Link href={"/signup"}>
+                        <div className="font-medium hover:text-blue-600 transition cursor-pointer mt-2 md:mt-0">Inscription</div>
+                    </Link>
+                </div>
             </div>
         </nav>
-    )
+    );
 }

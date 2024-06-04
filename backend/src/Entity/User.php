@@ -12,20 +12,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
 use App\Controller\SignUpController;
 use App\Controller\UserController;
+use Doctrine\ORM\Query\AST\UpdateItem;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
-    operations: [
-        new Post(
-            controller: SignUpController::class
-        ),
-        new Get(
-            controller: UserController::class
-        )
-] )]
+  operations: [
+    new Post(
+        controller: SignUpController::class),
+    new Get(),
+    new Patch()
+//         new Post(
+//             controller: SignUpController::class
+//         ),
+//         new Get(
+//             controller: UserController::class
+//         )
+] 
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]

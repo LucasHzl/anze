@@ -36,7 +36,7 @@ export default function SignInForm() {
             setApiSuccess("Login successful!");
             localStorage.setItem("token", data.token);
     
-            // router.push("/profil");
+            router.push("/profile");
           } else {
             setApiError(data.message || "An error occurred");
             setApiSuccess("");
