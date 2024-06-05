@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -48,10 +49,11 @@ export default function Profile() {
 
       console.log("Request body : ", bodyData);
 
-      const response = await fetch("http://127.0.0.1:8000/api/users/23", {
+      const response = await fetch("http://127.0.0.1:8000/api/users/33", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/merge-patch+json",
+          "Authorization": "Bearer " + Cookies.get('token')
         },
         body: JSON.stringify(bodyData),
       });
@@ -71,15 +73,16 @@ export default function Profile() {
   };
 
   const getUser = async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/users/23", {
+    const response = await fetch("http://127.0.0.1:8000/api/users/33", {
       method: "GET",
       headers: {
         "Content-Type": "application/ld+json",
+        "Authorization": "Bearer " + Cookies.get('token')
       },
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`Erreur HTTP ! status: ${response.status}`);
     }
 
     const bodyData = await response.json();
@@ -249,6 +252,89 @@ export default function Profile() {
               {apiError && <p className="text-red-500">{apiError}</p>}
             </div>
             <div className="hidden col-span-2 lg:block"></div>
+          </div>
+        </div>
+
+
+
+
+        <div className="mx-4 max-w-screen-xl sm:mx-8 xl:mx-auto">
+          <h1 className="border-b py-6 text-4xl font-semibold">Paiements</h1>
+          <div className="grid grid-cols-8 pt-3 pb-10 sm:grid-cols-10">
+            <div className="col-span-8 rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow">
+              <div className="mx-auto mb-10 overflow-hidden rounded-lg border bg-white mt-8 p-1">
+                <p className="mb-6 bg-gray-100 py-1 text-center text-lg font-medium">
+                  Historique des paiements
+                </p>
+                <table className="w-full">
+                  <thead>
+                    <tr>
+                      <td className="text-center font-semibold">N° de contravention</td>
+                      <td className="text-center font-semibold">Intitulé</td>
+                      <td className="text-center font-semibold">Description</td>
+                      <td className="text-center font-semibold">Montant réglé</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
+                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
+                      <td className="border-b py-2 text-center text-sm">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Dolores in cumque facere sapiente id sit blanditiis officia
+                        totam quod, soluta praesentium ratione aliquam excepturi
+                        obcaecati sequi unde accusamus, quam vero?
+                      </td>
+                      <td className="border-b py-2 text-center text-sm">$99.00</td>
+                    </tr>
+                    <tr>
+                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
+                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
+                      <td className="border-b py-2 text-center text-sm">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Dolores in cumque facere sapiente id sit blanditiis officia
+                        totam quod, soluta praesentium ratione aliquam excepturi
+                        obcaecati sequi unde accusamus, quam vero?
+                      </td>
+                      <td className="border-b py-2 text-center text-sm">$99.00</td>
+                    </tr>
+                    <tr>
+                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
+                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
+                      <td className="border-b py-2 text-center text-sm">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Dolores in cumque facere sapiente id sit blanditiis officia
+                        totam quod, soluta praesentium ratione aliquam excepturi
+                        obcaecati sequi unde accusamus, quam vero?
+                      </td>
+                      <td className="border-b py-2 text-center text-sm">$99.00</td>
+                    </tr>
+                    <tr>
+                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
+                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
+                      <td className="border-b py-2 text-center text-sm">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Dolores in cumque facere sapiente id sit blanditiis officia
+                        totam quod, soluta praesentium ratione aliquam excepturi
+                        obcaecati sequi unde accusamus, quam vero?
+                      </td>
+                      <td className="border-b py-2 text-center text-sm">$99.00</td>
+                    </tr>
+                    <tr>
+                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
+                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
+                      <td className="border-b py-2 text-center text-sm">
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                        Dolores in cumque facere sapiente id sit blanditiis officia
+                        totam quod, soluta praesentium ratione aliquam excepturi
+                        obcaecati sequi unde accusamus, quam vero?
+                      </td>
+                      <td className="border-b py-2 text-center text-sm">$99.00</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </main>

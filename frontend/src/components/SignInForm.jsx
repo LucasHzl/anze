@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function SignInForm() {
     const [username, setUsername] = useState("");
@@ -34,7 +35,8 @@ export default function SignInForm() {
     
           if (response.ok) {
             setApiSuccess("Login successful!");
-            localStorage.setItem("token", data.token);
+            // localStorage.setItem("token", data.token);
+            Cookies.set('token', data.token, {expires: 1/24})
     
             router.push("/profile");
           } else {

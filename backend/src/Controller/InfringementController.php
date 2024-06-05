@@ -14,6 +14,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class InfringementController extends AbstractController
 {
     
-
+    
     
 }

@@ -13,7 +13,7 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col md:flex-row md:gap-8 items-center md:items-center">
                 <div className="flex flex-col md:flex-row md:gap-8 items-center">
-                    <Link href={"/payment"}>
+                    <Link href={"/infringement"}>
                         <div className="font-medium hover:text-blue-600 transition cursor-pointer">Contravention</div>
                     </Link>
                     <Link href={"/profile"}>
