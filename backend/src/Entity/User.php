@@ -18,13 +18,14 @@ use App\Controller\UserController;
 use Doctrine\ORM\Query\AST\UpdateItem;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+// #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
   operations: [
     new Post(
         controller: SignUpController::class),
     new Get(),
-    new Patch()
+    new Patch(
+        controller: SignUpController::class),
 //         new Post(
 //             controller: SignUpController::class
 //         ),

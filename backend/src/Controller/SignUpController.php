@@ -48,10 +48,27 @@ class SignUpController extends AbstractController
         $userRoles = $requestContent['roles'];
         $userRepository = $this->entityManager->getRepository(User::class);
         $registeredUser = $userRepository->findOneBy(['email' => $userEmail]);
+        
+        // if ($registeredUser) {
+        //     return new Response('Adresse email déjà enregistrée', 409);
+        // } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+        //     $requestData = json_decode(file_get_contents('php://input'), true);
+        //     if (isset($requestData['email']) && $requestData['email'] !== $registeredUser['email']) {
+        //     } else {
+        //         return new Response('Vous devez modifier votre adresse e-mail pour éditer votre profil', 400);
+        //     }
+        // }
 
         if ($registeredUser) {
-            return new Response('Adresse email déjà enregistrée', 409);
+            if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+                return new Response('ok');
+            } else {
+                return new Response('Adresse email déjà enregistrée', 409);
+            }
         }
+        
+     
+        
 
         $newUser = new User();
         $newUser->setEmail($userEmail);
