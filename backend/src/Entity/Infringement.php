@@ -11,14 +11,20 @@ use App\Controller\UserController;
 use App\Controller\InfringementController;
 use App\Repository\InfringementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: InfringementRepository::class)]
 #[ApiResource(
     operations: [
         new Get(
             controller: InfringementController::class
-        )
+        ),
+        new GetCollection(),
 ] )]
+
+#[ApiFilter(SearchFilter::class, properties: ['infringement_id' => 'exact',])]
 
 class Infringement
 {

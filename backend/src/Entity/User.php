@@ -16,6 +16,9 @@ use ApiPlatform\Metadata\Patch;
 use App\Controller\SignUpController;
 use App\Controller\UserController;
 use Doctrine\ORM\Query\AST\UpdateItem;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\GetCollection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 // #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -26,14 +29,11 @@ use Doctrine\ORM\Query\AST\UpdateItem;
     new Get(),
     new Patch(
         controller: SignUpController::class),
-//         new Post(
-//             controller: SignUpController::class
-//         ),
-//         new Get(
-//             controller: UserController::class
-//         )
+    new GetCollection(),
 ] 
 )]
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact'])]
+
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
