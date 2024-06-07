@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Cookies from 'js-cookie';
+import Link from 'next/link';
 
-const InfringementPage = ({params}) => {
+const InfringementPage = ({ params }) => {
     const infringement_id = params.id;
-    const [infringementData, setInfringementData] = useState(null);
+    let [infringementData, setInfringementData] = useState(null);
 
-    
     const [loading, setLoading] = useState(true);
+
     const [error, setError] = useState(null);
-    console.log("bonjour" +params.id);
+
 
     useEffect(() => {
         if (infringement_id) {
@@ -54,25 +54,32 @@ const InfringementPage = ({params}) => {
     console.log('infringementData:', infringementData);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <p>Chargement ...</p>;
     }
 
     if (error) {
         return <p>Erreur : {error}</p>;
     }
 
+    infringementData = infringementData["hydra:member"][0]
+
     return (
         <>
             <Navbar />
-            <div>
+            <main className='flex justify-center items-center w-screen h-screen -mt-16'>
                 {infringementData && (
                     <div>
-                        <p>{infringementData.title}</p>
-                        <p>{infringementData.description}</p>
-                        <p>{infringementData.infringement_id}</p>
+                        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 m-8 p-8">
+                                <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Infraction n° {infringementData.infringement_id}</h2>
+                                <hr className="mt-4 mb-8" />
+                                <h3 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Motif : {infringementData.title}</h3>
+                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-lg"><p>Détail : {infringementData.description}</p></p>
+                            <h4 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">À régler : {infringementData.amount}€</h4>
+                            <button class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white">Payer</button>
+                        </div>
                     </div>
                 )}
-            </div>
+            </main>
         </>
     );
 };

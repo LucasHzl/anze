@@ -16,7 +16,7 @@ export default function Navbar() {
                     <Link href={"/infringement"}>
                         <div className="font-medium hover:text-blue-600 transition cursor-pointer">Contravention</div>
                     </Link>
-                    <Link href={"/profile"}>
+                    <Link href={`/profile`}>
                         <div className="font-medium hover:text-blue-600 transition cursor-pointer mt-2 md:mt-0">Mon compte</div>
                     </Link>
                 </div>

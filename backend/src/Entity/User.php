@@ -14,11 +14,11 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use App\Controller\SignUpController;
-use App\Controller\UserController;
 use Doctrine\ORM\Query\AST\UpdateItem;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\GetCollection;
+use App\Controller\ChangePasswordController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 // #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]

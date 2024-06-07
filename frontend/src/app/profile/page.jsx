@@ -4,10 +4,11 @@ import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import DecodeJwtTokenPayload from "../../../utils/jwtDecoder";
+
 
 export default function Profile() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [birthdate, setBirthdate] = useState("");
@@ -16,6 +17,11 @@ export default function Profile() {
   const [card_number, setCardNumber] = useState("");
   const [cryptogram, setCryptogram] = useState("");
   const [expiration_date, setExpirationDate] = useState("");
+  const [user_id, setUserId] = useState("");
+
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
 
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -25,6 +31,49 @@ export default function Profile() {
   const [error, setError] = useState(null);
 
   const router = useRouter();
+
+
+
+
+  const editPassword = async (e) => {
+    e.preventDefault();
+    console.log("Password submited");
+
+    try {
+      const bodyData = {
+        currentPassword,
+        newPassword,
+      };
+
+      console.log("Request body : ", bodyData);
+
+      const response = await fetch(`http://127.0.0.1:8000/api/change_password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/merge-patch+json",
+          "Authorization": "Bearer " + Cookies.get('token')
+        },
+        body: JSON.stringify(bodyData),
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        throw new Error(`Erreur http, status : ${response.status}`);
+      }
+
+      setApiSuccess("Profil mis à jour avec succès");
+      setCurrentPassword("")
+      setNewPassword("")
+    } catch (error) {
+      setApiError(error.message);
+    } finally {
+      // router.push("/signin");
+    }
+  };
+
+
+
 
   const editSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +85,6 @@ export default function Profile() {
       const bodyData = {
         roles,
         email,
-        password,
         first_name,
         last_name,
         birthdate,
@@ -49,7 +97,7 @@ export default function Profile() {
 
       console.log("Request body : ", bodyData);
 
-      const response = await fetch("http://127.0.0.1:8000/api/users/33", {
+      const response = await fetch(`http://127.0.0.1:8000/api/users/${user_id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/merge-patch+json",
@@ -72,8 +120,11 @@ export default function Profile() {
     }
   };
 
+
   const getUser = async () => {
-    const response = await fetch("http://127.0.0.1:8000/api/users/33", {
+    const decodedToken = await DecodeJwtTokenPayload(Cookies.get('token'))
+    console.log(decodedToken);
+    const response = await fetch(`http://127.0.0.1:8000/api/users?page=1&email=${decodedToken.username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/ld+json",
@@ -89,26 +140,28 @@ export default function Profile() {
     return bodyData;
   };
 
-  useEffect(() => {
-    const init = async () => {
-      try {
-        const data = await getUser();
-        setEmail(data.email);
-        setFirstName(data.first_name);
-        setLastName(data.last_name);
-        setBirthdate(data.birthdate);
-        setPhone(data.phone);
-        setAdress(data.adress);
-        setCardNumber(data.card_number);
-        setCryptogram(data.cryptogram);
-        setExpirationDate(data.expiration_date);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const init = async () => {
+    try {
+      let data = await getUser();
+      data = data["hydra:member"][0]
+      setEmail(data.email);
+      setFirstName(data.first_name);
+      setLastName(data.last_name);
+      setBirthdate(data.birthdate);
+      setPhone(data.phone);
+      setAdress(data.adress);
+      setCardNumber(data.card_number);
+      setCryptogram(data.cryptogram);
+      setExpirationDate(data.expiration_date);
+      setUserId(data.id);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     init();
   }, []);
 
@@ -119,6 +172,7 @@ export default function Profile() {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
 
   return (
     <>
@@ -137,11 +191,38 @@ export default function Profile() {
               </div>
               <hr className="mt-4 mb-8" />
               <p className="py-2 text-xl font-semibold">Identifiants de connexion</p>
-              <hr className="mt-4 mb-8" />
+
+
+
+
+
+
+              <form onSubmit={editPassword} action="#">
+                <p class="py-2 text-xl font-semibold">Mot de passe</p>
+                <div class="flex items-center">
+                  <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
+                    <label for="login-password">
+                      <span class="text-sm text-gray-500">Mot de passe actuel</span>
+                      <div class="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600">
+                        <input type="password" id="login-password" class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" onChange={(e) => setCurrentPassword(e.target.value)} value={currentPassword} />
+                      </div>
+                    </label>
+                    <label for="login-password">
+                      <span class="text-sm text-gray-500">Nouveau mot de passe</span>
+                      <div class="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600">
+                        <input type="password" id="login-password" class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" onChange={(e) => setNewPassword(e.target.value)} value={newPassword}/>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <button class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white">Sauvegarder</button>
+                <hr class="mt-4 mb-8" />
+              </form>
+
               <form onSubmit={editSubmit} action="#">
                 <div className="grid gap-y-6 gap-x-3 sm:grid-cols-2 lg:px-8 mb-8">
                   <label className="block" htmlFor="email">
-                    <p className="text-sm">Email</p>
+                    <p className="text-xl font-bold">Email</p>
                     <input
                       className="w-full rounded-md border bg-white py-2 px-2 outline-none ring-blue-600 focus:ring-1"
                       type="text"
@@ -149,15 +230,7 @@ export default function Profile() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </label>
-                  <label className="block" htmlFor="password">
-                    <p className="text-sm">Mot de passe</p>
-                    <input
-                      className="w-full rounded-md border bg-white py-2 px-2 outline-none ring-blue-600 focus:ring-1"
-                      type="password"
-                      defaultValue={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </label>
+
                 </div>
                 <p className="py-2 text-xl font-semibold">Identité et localisation</p>
                 <hr className="mt-4 mb-8" />

@@ -5,7 +5,7 @@ export default function SignIn() {
     return (
         <>
             <Navbar />
-            <main className="flex justify-center items-center flex-col h-screen dark:bg-gray-900">
+            <main className="flex justify-center items-center flex-col h-screen">
                 <SignUpForm />
             </main>
         </>

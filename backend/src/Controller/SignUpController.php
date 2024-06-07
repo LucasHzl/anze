@@ -25,13 +25,7 @@ class SignUpController extends AbstractController
     {
         $requestContent = json_decode($request->getContent(), true);
 
-        if (
-            !array_key_exists('email', $requestContent) ||
-            !array_key_exists(
-                'password',
-                $requestContent
-            )
-        ) {
+        if (!array_key_exists('email', $requestContent)) {
             $message = 'Un problème technique est survenu, veuillez réessayer ultérieurement
             return new Response($message, 500)';
         }
@@ -44,22 +38,26 @@ class SignUpController extends AbstractController
         $userCardNumber = $requestContent['card_number'];
         $userCryptogram = $requestContent['cryptogram'];
         $userExpirationDate = $requestContent['expiration_date'];
-        $userPassword = $requestContent['password'];
         $userRoles = $requestContent['roles'];
         $userRepository = $this->entityManager->getRepository(User::class);
         $registeredUser = $userRepository->findOneBy(['email' => $userEmail]);
-        
+        $newUser = new User();
 
-        if ($registeredUser) {
-            if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-                return new Response('ok');
-            } else {
+        if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+            $registeredUser = $this->getUser();
+            $newUser = $registeredUser;
+        } else {
+            if ($registeredUser) {
                 return new Response('Adresse email déjà enregistrée', 409);
             }
-        }
-        
+        $userPassword = $requestContent['password'];
 
-        $newUser = new User();
+            $newUser->setPassword(
+                $this->passwordHasher->hashPassword($newUser, $userPassword)
+            );
+        }
+
+
         $newUser->setEmail($userEmail);
         $newUser->setRoles($userRoles);
         $newUser->setFirstName($userFirstName);
@@ -72,9 +70,6 @@ class SignUpController extends AbstractController
         $newUser->setCryptogram($userCryptogram);
         $expirationDate = new DateTime($userExpirationDate);
         $newUser->setExpirationDate($expirationDate);
-        $newUser->setPassword(
-            $this->passwordHasher->hashPassword($newUser, $userPassword)
-        );
         $this->entityManager->persist($newUser);
         $this->entityManager->flush();
         return new Response('success', 200);
