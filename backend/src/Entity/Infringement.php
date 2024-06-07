@@ -23,7 +23,9 @@ use ApiPlatform\Metadata\Patch;
             controller: InfringementController::class
         ),
         new GetCollection(),
-        new Patch(),
+        new Post(
+            controller: InfringementController::class
+        ),
 ] )]
 
 #[ApiFilter(SearchFilter::class, properties: ['infringement_id' => 'exact',])]

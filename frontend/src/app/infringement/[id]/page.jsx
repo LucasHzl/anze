@@ -59,22 +59,14 @@ const InfringementPage = ({ params }) => {
         setApiSuccess("");
 
         try {
-            const decodedToken = await DecodeJwtTokenPayload(Cookies.get('token'));
-            console.log(decodedToken);
-
             const bodyData = {
-                title: infringementData.title,
-                description: infringementData.description,
-                amount: infringementData.amount,
-                infringement_id: infringementData.infringement_id,
-                user: `api/users/43`,
-                infringementId: `${infringementData.infringement_id}`
+                id: infringementData.id
             };
 
             console.log("Request body : ", bodyData);
 
-            const response = await fetch(`http://127.0.0.1:8000/api/infringements/${infringementData.id}`, {
-                method: "PATCH",
+            const response = await fetch(`http://127.0.0.1:8000/api/assign_user`, {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/merge-patch+json",
                     "Authorization": "Bearer " + Cookies.get('token')

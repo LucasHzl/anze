@@ -21,7 +21,6 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Controller\ChangePasswordController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-// #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
   operations: [
     new Post(
