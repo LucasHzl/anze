@@ -45,6 +45,10 @@ class InfringementController extends AbstractController
             return new Response('Trouve pas la contravention', 404);
         }
 
+        if ($infringement->getUser() != null) {
+            return new Response('Amende déjà réglée', 208);
+        }
+
         
         $infringement->setUser($user);
 
