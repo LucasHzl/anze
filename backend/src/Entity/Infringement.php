@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 
 #[ORM\Entity(repositoryClass: InfringementRepository::class)]
 #[ApiResource(
@@ -22,6 +23,7 @@ use ApiPlatform\Metadata\GetCollection;
             controller: InfringementController::class
         ),
         new GetCollection(),
+        new Patch(),
 ] )]
 
 #[ApiFilter(SearchFilter::class, properties: ['infringement_id' => 'exact',])]
