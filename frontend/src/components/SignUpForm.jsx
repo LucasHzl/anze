@@ -1,8 +1,7 @@
-"use client";
+"use client"
 
 import { useState } from "react";
-import { redirect, useRouter } from "next/navigation";
-import { requestAsyncStorage } from "next/dist/client/components/request-async-storage-instance";
+import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
     const [email, setEmail] = useState("");
@@ -19,17 +18,44 @@ export default function SignUpForm() {
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const [apiError, setApiError] = useState("");
-
     const [apiSuccess, setApiSuccess] = useState("");
 
     const router = useRouter();
 
+    const isValidCardNumber = (number) => {
+        let sum = 0;
+        let shouldDouble = false;
+        for (let i = number.length - 1; i >= 0; i--) {
+            let digit = parseInt(number.charAt(i));
+            if (shouldDouble) {
+                if ((digit *= 2) > 9) digit -= 9;
+            }
+            sum += digit;
+            shouldDouble = !shouldDouble;
+        }
+        return sum % 10 === 0;
+    };
+
+    const isValidCardNumberLength = (number) => {
+        return number.length === 16;
+    };
+
     const signUpSubmit = async (e) => {
         e.preventDefault();
 
+        if (!isValidCardNumberLength(card_number)) {
+            setApiError("Le numéro de carte bancaire doit comporter exactement 16 chiffres.");
+            return;
+        }
+
+        if (!isValidCardNumber(card_number)) {
+            setApiError("Le numéro de carte bancaire n'est pas valide.");
+            return;
+        }
+
         console.log("Form submitted");
 
-        let roles = ["ROLE_USER"]
+        let roles = ["ROLE_USER"];
 
         try {
             const bodyData = {
@@ -57,7 +83,9 @@ export default function SignUpForm() {
             });
 
             console.log("Response status :", response.status);
-
+            setApiSuccess("Compte créé avec succès !");
+        } catch (error) {
+            setApiError("Une erreur est survenue lors de la création du compte.");
         } finally {
             router.push("/signin");
         }

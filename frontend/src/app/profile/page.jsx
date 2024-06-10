@@ -1,11 +1,10 @@
-"use client";
+"use client"
 
 import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import DecodeJwtTokenPayload from "../../../utils/jwtDecoder";
-
 
 export default function Profile() {
   const [email, setEmail] = useState("");
@@ -22,7 +21,6 @@ export default function Profile() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [apiError, setApiError] = useState("");
@@ -32,8 +30,32 @@ export default function Profile() {
 
   const router = useRouter();
 
+  const isValidCardNumber = (cardNumber) => {
+    const cleanNumber = cardNumber.replace(/\D/g, '');
+    
+    if (cleanNumber.length !== 16) {
+      return false;
+    }
 
+    let sum = 0;
+    let shouldDouble = false;
 
+    for (let i = cleanNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cleanNumber.charAt(i));
+
+      if (shouldDouble) {
+        digit *= 2;
+        if (digit > 9) {
+          digit -= 9;
+        }
+      }
+
+      sum += digit;
+      shouldDouble = !shouldDouble;
+    }
+
+    return sum % 10 === 0;
+  };
 
   const editPassword = async (e) => {
     e.preventDefault();
@@ -72,12 +94,14 @@ export default function Profile() {
     }
   };
 
-
-
-
   const editSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted");
+
+    if (!isValidCardNumber(card_number)) {
+      setApiError("Numéro de carte bancaire invalide. Il doit contenir exactement 16 chiffres.");
+      return;
+    }
 
     let roles = ["ROLE_USER"];
 
@@ -120,7 +144,6 @@ export default function Profile() {
     }
   };
 
-
   const getUser = async () => {
     const decodedToken = await DecodeJwtTokenPayload(Cookies.get('token'))
     console.log(decodedToken);
@@ -131,6 +154,7 @@ export default function Profile() {
         "Authorization": "Bearer " + Cookies.get('token')
       },
     });
+    
 
     if (!response.ok) {
       throw new Error(`Erreur HTTP ! status: ${response.status}`);
@@ -173,7 +197,6 @@ export default function Profile() {
     return <div>Error: {error}</div>;
   }
 
-
   return (
     <>
       <main className="">
@@ -191,12 +214,6 @@ export default function Profile() {
               </div>
               <hr className="mt-4 mb-8" />
               <p className="py-2 text-xl font-semibold">Identifiants de connexion</p>
-
-
-
-
-
-
               <form onSubmit={editPassword} action="#">
                 <p class="py-2 text-xl font-semibold">Mot de passe</p>
                 <div class="flex items-center">
@@ -210,7 +227,7 @@ export default function Profile() {
                     <label for="login-password">
                       <span class="text-sm text-gray-500">Nouveau mot de passe</span>
                       <div class="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600">
-                        <input type="password" id="login-password" class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" onChange={(e) => setNewPassword(e.target.value)} value={newPassword}/>
+                        <input type="password" id="login-password" class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" onChange={(e) => setNewPassword(e.target.value)} value={newPassword} />
                       </div>
                     </label>
                   </div>
@@ -218,7 +235,6 @@ export default function Profile() {
                 <button class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white">Sauvegarder</button>
                 <hr class="mt-4 mb-8" />
               </form>
-
               <form onSubmit={editSubmit} action="#">
                 <div className="grid gap-y-6 gap-x-3 sm:grid-cols-2 lg:px-8 mb-8">
                   <label className="block" htmlFor="email">
@@ -230,7 +246,6 @@ export default function Profile() {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </label>
-
                 </div>
                 <p className="py-2 text-xl font-semibold">Identité et localisation</p>
                 <hr className="mt-4 mb-8" />
@@ -325,89 +340,6 @@ export default function Profile() {
               {apiError && <p className="text-red-500">{apiError}</p>}
             </div>
             <div className="hidden col-span-2 lg:block"></div>
-          </div>
-        </div>
-
-
-
-
-        <div className="mx-4 max-w-screen-xl sm:mx-8 xl:mx-auto">
-          <h1 className="border-b py-6 text-4xl font-semibold">Paiements</h1>
-          <div className="grid grid-cols-8 pt-3 pb-10 sm:grid-cols-10">
-            <div className="col-span-8 rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow">
-              <div className="mx-auto mb-10 overflow-hidden rounded-lg border bg-white mt-8 p-1">
-                <p className="mb-6 bg-gray-100 py-1 text-center text-lg font-medium">
-                  Historique des paiements
-                </p>
-                <table className="w-full">
-                  <thead>
-                    <tr>
-                      <td className="text-center font-semibold">N° de contravention</td>
-                      <td className="text-center font-semibold">Intitulé</td>
-                      <td className="text-center font-semibold">Description</td>
-                      <td className="text-center font-semibold">Montant réglé</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
-                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
-                      <td className="border-b py-2 text-center text-sm">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                        Dolores in cumque facere sapiente id sit blanditiis officia
-                        totam quod, soluta praesentium ratione aliquam excepturi
-                        obcaecati sequi unde accusamus, quam vero?
-                      </td>
-                      <td className="border-b py-2 text-center text-sm">$99.00</td>
-                    </tr>
-                    <tr>
-                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
-                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
-                      <td className="border-b py-2 text-center text-sm">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                        Dolores in cumque facere sapiente id sit blanditiis officia
-                        totam quod, soluta praesentium ratione aliquam excepturi
-                        obcaecati sequi unde accusamus, quam vero?
-                      </td>
-                      <td className="border-b py-2 text-center text-sm">$99.00</td>
-                    </tr>
-                    <tr>
-                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
-                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
-                      <td className="border-b py-2 text-center text-sm">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                        Dolores in cumque facere sapiente id sit blanditiis officia
-                        totam quod, soluta praesentium ratione aliquam excepturi
-                        obcaecati sequi unde accusamus, quam vero?
-                      </td>
-                      <td className="border-b py-2 text-center text-sm">$99.00</td>
-                    </tr>
-                    <tr>
-                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
-                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
-                      <td className="border-b py-2 text-center text-sm">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                        Dolores in cumque facere sapiente id sit blanditiis officia
-                        totam quod, soluta praesentium ratione aliquam excepturi
-                        obcaecati sequi unde accusamus, quam vero?
-                      </td>
-                      <td className="border-b py-2 text-center text-sm">$99.00</td>
-                    </tr>
-                    <tr>
-                      <td className="border-b py-2 text-center text-sm">KW2024_22_78</td>
-                      <td className="border-b py-2 text-center text-sm">Drifts excessifs sur la route lunaire</td>
-                      <td className="border-b py-2 text-center text-sm">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                        Dolores in cumque facere sapiente id sit blanditiis officia
-                        totam quod, soluta praesentium ratione aliquam excepturi
-                        obcaecati sequi unde accusamus, quam vero?
-                      </td>
-                      <td className="border-b py-2 text-center text-sm">$99.00</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
           </div>
         </div>
       </main>

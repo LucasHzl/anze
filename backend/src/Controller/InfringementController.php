@@ -46,7 +46,7 @@ class InfringementController extends AbstractController
         }
 
         if ($infringement->getUser() != null) {
-            return new Response('Amende déjà réglée', 208);
+            return new Response('Contravention déjà réglée', 208);
         }
 
         
