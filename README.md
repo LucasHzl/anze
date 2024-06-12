@@ -3,7 +3,7 @@
 ## 🌌 Description
 
 **L'Agence Nationale Des Zinzins de l'Espace (ANZE)** est une plateforme innovante pour gérer et payer vos contraventions spatiales.  
-Ce projet est développé avec **Next.js**, **React**, **Symfony**, et **Tailwind CSS**. La communication entre le front-end et le back-end se fait via **API Platform**.
+Ce projet est développé avec **Next.js**, **React**, **Symfony**, et **Tailwind CSS**. La communication entre le front-end et le back-end se fait via une api avec la librairie **API Platform**.
 
 ## 🚀 Fonctionnalités
 
